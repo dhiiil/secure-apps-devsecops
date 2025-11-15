@@ -79,7 +79,7 @@ export default function TodoDetailPage() {
   const fetchTodoDetail = async () => {
     try {
       setLoading(true)
-      const response = await authFetch(`${API_URL}/todos/public/${id}`)
+      const response = await authFetch(`${API_URL}/todos/${id}`)
       
       if (response.status === 404) {
         setNotFound(true)
