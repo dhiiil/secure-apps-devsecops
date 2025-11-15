@@ -62,7 +62,7 @@ export function TodoForm({ onAddTodo }: TodoFormProps) {
               className="bg-input border-border"
             />
             <div className="mt-2 prose hidden">
-              <div dangerouslySetInnerHTML={{ __html: description }} />
+              <div/>
             </div>
           </div>
 
