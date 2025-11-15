@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    container_name: brawijaya-frontend
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      # Add any other environment variables needed for your app
+      # - NEXT_PUBLIC_API_URL=http://localhost:8080
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - proxy
+      - task-management-network
+
+networks:
+  task-management-network:
+    external: true
+    name: task-management-network
+  proxy:
+    external: true
+    name: proxy
