@@ -12,7 +12,7 @@ services:
     volumes:
       - postgres_data_secure:/var/lib/postgresql/data
     networks:
-      - task-management-network
+      - task-management-network-secure
 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-task_management}"]
@@ -47,7 +47,7 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - task-management-network
+      - task-management-network-secure
       - proxy
     command: ["./main"]
 
@@ -59,6 +59,6 @@ networks:
   proxy:
     external: true
     name: proxy
-  task-management-network:
+  task-management-network-secure:
     external: true
-    name: task-management-network
+    name: task-management-network-secure
