@@ -52,7 +52,7 @@ services:
     command: ["./main"]
 
 volumes:
-  postgres_data:
+  postgres_data_secure:
     driver: local
 
 networks:
