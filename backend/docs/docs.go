@@ -70,52 +70,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/login-vulnerable": {
-            "post": {
-                "description": "Demonstrasi endpoint rentan SQL injection. Hanya untuk testing lokal/edukasi.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Authentication"
-                ],
-                "summary": "Vulnerable login (FOR TESTING ONLY)",
-                "parameters": [
-                    {
-                        "description": "Login Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handlers.LoginRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Login successful (vulnerable)",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.AuthResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid credentials",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.AuthResponse"
-                        }
-                    },
-                    "422": {
-                        "description": "Validation error",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.AuthResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/auth/register": {
             "post": {
                 "description": "Create a new user account with username, email, and password",
@@ -278,47 +232,6 @@ const docTemplate = `{
                         "description": "Validation error",
                         "schema": {
                             "$ref": "#/definitions/handlers.TodoResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/todos/public/{id}": {
-            "get": {
-                "description": "Get detail of a todo (and subtasks) using its public ID",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "todos"
-                ],
-                "summary": "Get todo by public ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Public ID of the Todo",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/utils.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/utils.Response"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/utils.Response"
                         }
                     }
                 }
@@ -710,18 +623,6 @@ const docTemplate = `{
                 "StatusInProgress",
                 "StatusDone"
             ]
-        },
-        "utils.Response": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                }
-            }
         }
     },
     "securityDefinitions": {
