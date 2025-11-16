@@ -265,30 +265,3 @@ func (h *TodoHandler) DeleteTodo(c *gin.Context) {
 
 	utils.SuccessResponse(c, "Todo deleted successfully", nil)
 }
-
-// GetByPublicID godoc
-// @Summary Get todo by public ID
-// @Description Get detail of a todo (and subtasks) using its public ID
-// @Tags todos
-// @Param id path int true "Public ID of the Todo"
-// @Produce json
-// @Success 200 {object} utils.Response
-// @Failure 400 {object} utils.Response
-// @Failure 404 {object} utils.Response
-// @Router /todos/public/{id} [get]
-func (h *TodoHandler) GetByPublicID(c *gin.Context) {
-	idParam := c.Param("id")
-	id, err := strconv.ParseUint(idParam, 10, 64)
-	if err != nil {
-		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid todo ID format")
-		return
-	}
-
-	todo, err := h.todoService.GetByIDPublic(uint(id))
-	if err != nil {
-		utils.ErrorResponse(c, http.StatusNotFound, "Todo not found")
-		return
-	}
-
-	utils.SuccessResponse(c, "Todo retrieved successfully", todo)
-}

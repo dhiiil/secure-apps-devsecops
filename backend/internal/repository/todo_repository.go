@@ -9,7 +9,6 @@ import (
 type TodoRepository interface {
     Create(todo *models.Todo) error
     GetByUserID(userID uint, status, category string) ([]models.Todo, error)
-    GetByIDPublic(id uint) (*models.Todo, error)
     GetByID(id, userID uint) (*models.Todo, error)
     Update(todo *models.Todo) error
     Delete(id, userID uint) error
@@ -58,12 +57,4 @@ func (r *todoRepository) Update(todo *models.Todo) error {
 func (r *todoRepository) Delete(id, userID uint) error {
     return r.db.Where("todo_id = ? AND user_id = ?", id, userID).
         Delete(&models.Todo{}).Error
-}
-
-func (r *todoRepository) GetByIDPublic(id uint) (*models.Todo, error) {
-	var todo models.Todo
-	err := r.db.Where("todo_id = ?", id).
-		Preload("Subtasks").
-		First(&todo).Error
-	return &todo, err
 }

@@ -95,35 +95,3 @@ func (h *AuthHandler) Login(c *gin.Context) {
         "user":  user,
     })
 }
-
- // LoginVulnerable godoc
- // @Summary Vulnerable login (FOR TESTING ONLY)
- // @Description Demonstrasi endpoint rentan SQL injection. Hanya untuk testing lokal/edukasi.
- // @Tags Authentication
- // @Accept json
- // @Produce json
- // @Param request body LoginRequest true "Login Request"
- // @Success 200 {object} AuthResponse "Login successful (vulnerable)"
- // @Failure 401 {object} AuthResponse "Invalid credentials"
- // @Failure 422 {object} AuthResponse "Validation error"
- // @Router /auth/login-vulnerable [post]
-func (h *AuthHandler) LoginVulnerable(c *gin.Context) {
-    var req LoginRequest
-    if err := c.ShouldBindJSON(&req); err != nil {
-        utils.ValidationErrorResponse(c, err.Error())
-        return
-    }
-
-    // Panggil service vulnerable (pastikan method tersedia di interface)
-    token, user, err := h.authService.LoginVulnerable(req.Username, req.Password)
-    if err != nil {
-        // Untuk konsistensi, jangan berikan detail error yang berlebihan
-        utils.ErrorResponse(c, http.StatusUnauthorized, "invalid credentials")
-        return
-    }
-
-    utils.SuccessResponse(c, "Login successful (vulnerable - testing only)", gin.H{
-        "token": token,
-        "user":  user,
-    })
-}

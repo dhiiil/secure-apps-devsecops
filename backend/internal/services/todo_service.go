@@ -13,7 +13,6 @@ type TodoService interface {
     CreateTodo(userID uint, title, description string, priority models.Priority, category models.Category, dueDate *time.Time) (*models.Todo, error)
     GetTodos(userID uint, status, category string) ([]models.Todo, error)
     GetTodoByID(id, userID uint) (*models.Todo, error)
-    GetByIDPublic(id uint) (*models.Todo, error)
     UpdateTodo(id, userID uint, updates map[string]interface{}) (*models.Todo, error)
     DeleteTodo(id, userID uint) error
 }
@@ -65,10 +64,6 @@ func (s *todoService) GetTodoByID(id, userID uint) (*models.Todo, error) {
         return nil, errors.New("database error")
     }
     return todo, nil
-}
-
-func (s *todoService) GetByIDPublic(id uint) (*models.Todo, error) {
-	return s.todoRepo.GetByIDPublic(id)
 }
 
 func (s *todoService) UpdateTodo(id, userID uint, updates map[string]interface{}) (*models.Todo, error) {
