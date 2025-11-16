@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	"task-management/internal/auth"
 	"task-management/internal/config"
 	"task-management/internal/models"
@@ -15,7 +14,6 @@ import (
 type AuthService interface {
 	Register(username, email, password, fullname string) (*models.User, error)
 	Login(username, password string) (string, *models.User, error)
-	LoginVulnerable(username, password string) (string, *models.User, error)
 }
 
 type authService struct {
@@ -82,38 +80,4 @@ func (s *authService) Login(username, password string) (string, *models.User, er
 	}
 
 	return token, user, nil
-}
-
-func (s *authService) LoginVulnerable(username, password string) (string, *models.User, error) {
-	// VULNERABLE: Bypass dengan SQL injection
-	// Attacker bisa input:
-	// username: admin' --
-	// password: apapun
-
-	// Atau lebih advanced:
-	// username: admin' OR '1'='1
-	// password: ' OR '1'='1
-    
-	query := fmt.Sprintf(
-		"SELECT * FROM users WHERE username = '%s' AND password = '%s'",
-		username,
-		password,
-	)
-
-	var user models.User
-	err := s.userRepo.RawQuery(query, &user)
-	if user.ID == 0 {
-		return "", nil, errors.New("invalid credentials")
-	}
-
-	if err != nil {
-		return "", nil, errors.New("invalid credentials")
-	}
-
-	token, err := auth.GenerateToken(user.ID, s.config)
-	if err != nil {
-		return "", nil, errors.New("failed to generate token")
-	}
-
-	return token, &user, nil
 }

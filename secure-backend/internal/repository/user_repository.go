@@ -11,7 +11,6 @@ type UserRepository interface {
 	GetByUsername(username string) (*models.User, error)
 	GetByEmail(email string) (*models.User, error)
 	GetByID(id uint) (*models.User, error)
-	RawQuery(query string, dest interface{}) error
 }
 
 type userRepository struct {
@@ -44,8 +43,4 @@ func (r *userRepository) GetByID(id uint) (*models.User, error) {
 	var user models.User
 	err := r.db.Where("user_id = ? AND is_active = ?", id, true).First(&user).Error
 	return &user, err
-}
-
-func (r *userRepository) RawQuery(query string, dest interface{}) error {
-	return r.db.Raw(query).Scan(dest).Error
 }
