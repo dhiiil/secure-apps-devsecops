@@ -22,9 +22,7 @@ services:
 
   # Go Application
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: "fauzanghaza/brawijaya-devsecops-backend-secure:${IMAGE_TAG:-latest}"
     container_name: task-management-app-secure
     restart: unless-stopped
     environment:

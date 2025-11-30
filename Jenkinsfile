@@ -19,17 +19,7 @@ pipeline {
             steps {
                 echo 'Checking out source on builtin node'
                 checkout scm
-                script {
-                    def branch = sh(
-                        script: """
-                            git rev-parse --abbrev-ref HEAD 2>/dev/null || echo HEAD
-                        """,
-                        returnStdout: true
-                    ).trim()
-
-                    env.EFFECTIVE_BRANCH = branch
-                    echo "Detected branch: ${env.EFFECTIVE_BRANCH}"
-                }
+                env.EFFECTIVE_BRANCH = "master"
             }
 
         }
@@ -138,8 +128,8 @@ pipeline {
                     env.IMAGE_TAG = tag
                     echo "Using image tag: ${env.IMAGE_TAG}"
 
-                    def backendImage = "fauzanghaza/brawijaya-devsecops-backend:${env.IMAGE_TAG}"
-                    def frontendImage = "fauzanghaza/brawijaya-devsecops-frontend:${env.IMAGE_TAG}"
+                    def backendImage = "fauzanghaza/brawijaya-devsecops-backend-secure:${env.IMAGE_TAG}"
+                    def frontendImage = "fauzanghaza/brawijaya-devsecops-frontend-secure:${env.IMAGE_TAG}"
 
 
                     withCredentials([usernamePassword(credentialsId: 'nasigoreng', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
@@ -168,18 +158,18 @@ pipeline {
 
                     sh """
                         echo 'Tagging images with :latest'
-                        docker tag ${backendImage} fauzanghaza/brawijaya-devsecops-backend:latest || true
-                        docker tag ${frontendImage} fauzanghaza/brawijaya-devsecops-frontend:latest || true
+                        docker tag ${backendImage} fauzanghaza/brawijaya-devsecops-backend-secure:latest || true
+                        docker tag ${frontendImage} fauzanghaza/brawijaya-devsecops-frontend-secure:latest || true
 
                         echo 'Pushing backend image ${backendImage}'
                         docker push ${backendImage} || echo 'Push backend failed'
                         echo 'Pushing backend:latest'
-                        docker push fauzanghaza/brawijaya-devsecops-backend:latest || echo 'Push backend:latest failed'
+                        docker push fauzanghaza/brawijaya-devsecops-backend-secure:latest || echo 'Push backend:latest failed'
 
                         echo 'Pushing frontend image ${frontendImage}'
                         docker push ${frontendImage} || echo 'Push frontend failed'
                         echo 'Pushing frontend:latest'
-                        docker push fauzanghaza/brawijaya-devsecops-frontend:latest || echo 'Push frontend:latest failed'
+                        docker push fauzanghaza/brawijaya-devsecops-frontend-secure:latest || echo 'Push frontend:latest failed'
                     """
                 }
             }
@@ -200,8 +190,8 @@ pipeline {
 
                     def images = []
                     if (env.IMAGE_TAG) {
-                        images << "fauzanghaza/brawijaya-devsecops-backend:${env.IMAGE_TAG}"
-                        images << "fauzanghaza/brawijaya-devsecops-frontend:${env.IMAGE_TAG}"
+                        images << "fauzanghaza/brawijaya-devsecops-backend-secure:${env.IMAGE_TAG}"
+                        images << "fauzanghaza/brawijaya-devsecops-frontend-secure:${env.IMAGE_TAG}"
                     }
 
 
@@ -254,7 +244,7 @@ pipeline {
             stages {
                 stage('Generate environment files') {
                     steps {
-                        withCredentials([file(credentialsId: 'nasigoreng-satu', variable: 'BACKEND_ENVFILE')]) {
+                        withCredentials([file(credentialsId: 'nasigoreng-tiga', variable: 'BACKEND_ENVFILE')]) {
                             sh '''
                                 mkdir -p backend
                                 cp "$BACKEND_ENVFILE" backend/.env
@@ -262,7 +252,7 @@ pipeline {
                             '''
                         }
 
-                        withCredentials([file(credentialsId: 'nasigoreng-dua', variable: 'FRONTEND_ENVFILE')]) {
+                        withCredentials([file(credentialsId: 'nasigoreng-empat', variable: 'FRONTEND_ENVFILE')]) {
                             sh '''
                                 mkdir -p frontend
                                 cp "$FRONTEND_ENVFILE" frontend/.env
@@ -331,8 +321,8 @@ pipeline {
                 def imageInfo = ''
                 if (env.IMAGE_TAG) {
                     imageInfo = "Images:\n" +
-                        "• `fauzanghaza/brawijaya-devsecops-backend:${env.IMAGE_TAG}` (and :latest)\n" +
-                        "• `fauzanghaza/brawijaya-devsecops-frontend:${env.IMAGE_TAG}` (and :latest)"
+                        "• `fauzanghaza/brawijaya-devsecops-backend-secure:${env.IMAGE_TAG}` (and :latest)\n" +
+                        "• `fauzanghaza/brawijaya-devsecops-frontend-secure:${env.IMAGE_TAG}` (and :latest)"
                 }
 
                 def lines = [
