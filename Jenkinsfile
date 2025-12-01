@@ -153,7 +153,7 @@ pipeline {
                     dir('frontend') {
                         sh """
                             echo 'Building frontend image: ${frontendImage}'
-                            docker build -t ${frontendImage} -f Dockerfile .
+                            docker build --build-arg NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL} -t ${frontendImage} -f Dockerfile .
                         """
                     }
 
