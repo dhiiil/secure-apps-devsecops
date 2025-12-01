@@ -163,7 +163,15 @@ pipeline {
                                 export NEXT_PUBLIC_API_URL="${env.NEXT_PUBLIC_API_URL}"
                             fi
 
+
                             echo "Using NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
+
+                            # If NEXT_PUBLIC_API_URL is empty or the literal string 'null', override with a sane default
+                            if [ -z "$NEXT_PUBLIC_API_URL" ] || [ "$NEXT_PUBLIC_API_URL" = "null" ]; then
+                                echo 'NEXT_PUBLIC_API_URL empty or null — defaulting to https://app-secure.fauzanghaza.com'
+                                export NEXT_PUBLIC_API_URL="https://app-secure.fauzanghaza.com"
+                            fi
+
                             docker build --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" -t ${frontendImage} -f Dockerfile .
                         """
                     }
