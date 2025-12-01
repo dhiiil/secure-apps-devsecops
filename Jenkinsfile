@@ -153,7 +153,18 @@ pipeline {
                     dir('frontend') {
                         sh """
                             echo 'Building frontend image: ${frontendImage}'
-                            docker build --build-arg NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL} -t ${frontendImage} -f Dockerfile .
+                            # Try to read NEXT_PUBLIC_API_URL from frontend/.env (if present)
+                            if [ -f .env ]; then
+                                export NEXT_PUBLIC_API_URL=\$(grep -m1 '^NEXT_PUBLIC_API_URL=' .env | cut -d= -f2-)
+                            fi
+
+                            # If the Jenkins pipeline provides NEXT_PUBLIC_API_URL in environment, prefer it
+                            if [ -n "${env.NEXT_PUBLIC_API_URL}" ]; then
+                                export NEXT_PUBLIC_API_URL="${env.NEXT_PUBLIC_API_URL}"
+                            fi
+
+                            echo "Using NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
+                            docker build --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" -t ${frontendImage} -f Dockerfile .
                         """
                     }
 
